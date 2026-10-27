@@ -34,3 +34,37 @@ The database intentionally has no invented room prices or room inventory. Hotel 
 
 ## Important
 This repository currently contains public-safe frontend configuration only. A publishable/anon key is designed for browser use and relies on correct RLS policies. Never expose a Supabase service-role key.
+
+
+## Hotel administrator dashboard
+
+Open `admin.html` to access the staff dashboard. The dashboard supports:
+- reviewing room booking requests and updating booking status/internal notes;
+- reviewing restaurant/bar orders and updating their workflow status;
+- adding/editing menu items, prices, descriptions, images, and availability;
+- adding/editing room categories, rates, capacity, amenities, photos, and publication status.
+
+### Provision the first administrator safely
+
+1. In the Supabase project dashboard for `fort-spring-hotel-demo`, open **Authentication → Users** and create an administrator account with an email address and a strong unique password. Do not reuse a password from another project.
+2. Copy that account's Auth user UUID.
+3. Open the Supabase SQL Editor and run the following, replacing the example UUID and display name with the account you just created:
+
+```sql
+insert into public.fs_admin_users (user_id, display_name)
+values ('REPLACE-WITH-AUTH-USER-UUID', 'Hotel Administrator')
+on conflict (user_id) do update
+set display_name = excluded.display_name;
+```
+
+4. Sign in at `admin.html` using that account. Only users present in `fs_admin_users` are authorized. Do not expose the database service-role key or place it in website files.
+
+The admin dashboard uses the Supabase publishable key only. Table access is governed by Row Level Security (RLS). Do not use real guest information until the hotel approves the site and the access rules have been reviewed and tested.
+
+## Important demo limits
+
+- Hotel room categories, menu items, prices, photos, and operational details must be supplied/confirmed by hotel management.
+- Online payment processing is not enabled. Restaurant/bar orders use a pay-at-hotel workflow for now.
+- Staff must review and accept a request; a submitted booking or food order is not an automatic confirmation.
+- Before public launch, test account provisioning, all status updates, mobile layout, validation, database policies, and real-world operational handling.
+- Deploy to Netlify only after the owner has reviewed and approved the finished site.
