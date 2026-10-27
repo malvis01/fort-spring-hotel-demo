@@ -29,7 +29,7 @@ A mobile-responsive hotel website concept by Malvis Digital, prepared for manage
 5. Test the full booking workflow, mobile layouts, and accessibility.
 6. Deploy to Netlify only after owner approval.
 
-## Sample room data
+## Food ordering setup\nThe menu is intentionally empty until hotel management supplies the real menu and prices. An authorized admin can add items to \`public.fs_restaurant_menu\` and set \`is_available = true\` when ready to sell. The existing \`category\` constraint accepts Food, Drinks, Bar, Dessert, and Sides. Orders are stored in \`fs_food_orders\` and \`fs_food_order_items\`; requests begin as pending and use pay-at-hotel as the demo payment status. Do not mark an order accepted until staff confirms stock, preparation time, and delivery/dine-in details.\n\n## Sample room data
 The database intentionally has no invented room prices or room inventory. Hotel management must provide accurate details before rooms are published.
 
 ## Important
