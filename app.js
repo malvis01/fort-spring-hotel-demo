@@ -34,9 +34,10 @@ $("bookingForm").addEventListener("submit",async event=>{
  const button=$("submitBooking");button.disabled=true;button.textContent="Sending request…";
  const payload={room_id:$("roomId").value,check_in:checkIn,check_out:checkOut,adults:Number($("adults").value),children:Number($("children").value),guest_name:$("guestName").value.trim(),guest_email:$("guestEmail").value.trim(),guest_phone:$("guestPhone").value.trim(),special_requests:$("requests").value.trim()||null};
  try{
-  const {data,error}=await db.from("fs_bookings").insert(payload).select("booking_reference").single();
+  const {data,error}=await db.rpc("fs_create_booking_request",{p_room_id:payload.room_id,p_check_in:payload.check_in,p_check_out:payload.check_out,p_adults:payload.adults,p_children:payload.children,p_guest_name:payload.guest_name,p_guest_email:payload.guest_email,p_guest_phone:payload.guest_phone,p_special_requests:payload.special_requests});
   if(error) throw error;
-  message("Your request was received. Reference: "+data.booking_reference+". This is not a confirmed reservation; hotel management must confirm availability.");
+  const result=Array.isArray(data)?data[0]:data;
+  message("Your request was received. Reference: "+result.booking_reference+". Estimated room total: "+money(result.quoted_total)+". This is not a confirmed reservation; hotel management must confirm availability.");
   $("bookingForm").reset();$("checkIn").min=today.toISOString().slice(0,10);
  }catch(err){console.error(err);message(err.message?.includes("capacity")?"The selected room may not accommodate the guest count. Please adjust your selection or contact the hotel.":"We couldn't submit your request just now. Please check your details or contact the hotel directly.",true);}
  finally{button.disabled=false;button.innerHTML='Send booking request <span>→</span>';}
